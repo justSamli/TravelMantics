@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -16,6 +17,7 @@ import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
 
@@ -24,9 +26,9 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerAdapter.Recycl
     private FirebaseDatabase mFirebaseDatabase;
     private DatabaseReference mDatabaseReference;
     private ChildEventListener mChildEventListener;
+    private ImageView imageDeal;
 
     public RecyclerAdapter() {
-        // FirebaseUtil.openFbReference("traveldeals");
         mFirebaseDatabase = FirebaseUtil.mFirebaseDatabase;
         mDatabaseReference = FirebaseUtil.mDatabaseReference;
         deals = FirebaseUtil.mDeals;
@@ -93,12 +95,23 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerAdapter.Recycl
             descriptionView = itemView.findViewById(R.id.descriptionView);
             priceView = itemView.findViewById(R.id.priceView);
             itemView.setOnClickListener(this);
+            imageDeal = itemView.findViewById(R.id.imageDeal);
+        }
+
+        private void showImage(String url) {
+            if ((url != null) && (url.isEmpty() == false)) {
+                Picasso.get().load(url)
+                        .resize(160, 160)
+                        .centerCrop()
+                        .into(imageDeal);
+            }
         }
 
         public void bind(TravelDeal deal) {
             titleView.setText(deal.getTitle());
             descriptionView.setText(deal.getDescription());
             priceView.setText(deal.getPrice());
+            showImage(deal.getImageUrl());
         }
 
         @Override
